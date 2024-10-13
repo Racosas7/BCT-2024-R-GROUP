@@ -1,0 +1,56 @@
+const int segmentPins[7] = {2, 3, 4, 5, 6, 7, 8};
+const int digitPins[2] = {9, 10};
+const int buzzerPin = 11; // Pin connected to the buzzer
+const int digit[10][7] = {
+  {0, 0, 0, 0, 0, 0, 1}, // 0
+  {1, 0, 0, 1, 1, 1, 1}, // 1
+  {0, 0, 1, 0, 0, 1, 0}, // 2
+  {0, 0, 0, 0, 1, 1, 0}, // 3
+  {1, 0, 0, 1, 1, 0, 0}, // 4
+  {0, 1, 0, 0, 1, 0, 0}, // 5
+  {0, 1, 0, 0, 0, 0, 0}, // 6
+  {0, 0, 0, 1, 1, 1, 1}, // 7
+  {0, 0, 0, 0, 0, 0, 0}, // 8
+  {0, 0, 0, 0, 1, 0, 0}  // 9
+};
+
+void setup() {
+  for (int i = 0; i < 7; i++) {
+    pinMode(segmentPins[i], OUTPUT);
+  }
+  for (int i = 0; i < 2; i++) {
+    pinMode(digitPins[i], OUTPUT);
+  }
+  pinMode(buzzerPin, OUTPUT); // Set the buzzer pin as output
+  noTone(buzzerPin); // Ensure the buzzer is off initially
+}
+
+void loop() {
+  for (int number = 24; number >= 0; number--) {
+    int tens = number / 10;
+    int ones = number % 10;
+    for (int i = 0; i < 100; i++) { // Adjust this value to control the display speed
+      displayNumber(tens, ones);
+    }
+  }
+  tone(buzzerPin, 1000, 3000); // Sound the buzzer at 1000 Hz for 3000 ms (3 seconds)
+  delay(3000); // Wait for the buzzer to finish
+}
+
+void displayNumber(int tens, int ones) {
+  // Display tens digit
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentPins[i], digit[tens][i]);
+  }
+  digitalWrite(digitPins[0], HIGH); // Turn on tens digit
+  delay(2); // Small delay to prevent flickering
+  digitalWrite(digitPins[0], LOW); // Turn off tens digit
+
+  // Display ones digit
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentPins[i], digit[ones][i]);
+  }
+  digitalWrite(digitPins[1], HIGH); // Turn on ones digit
+  delay(5); // Small delay to prevent flickering
+  digitalWrite(digitPins[1], LOW); // Turn off ones digit
+}
