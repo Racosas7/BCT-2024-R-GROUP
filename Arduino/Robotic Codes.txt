@@ -1,0 +1,167 @@
+Two digit seven segement Code:
+
+const int segmentPins[7] = {2, 3, 4, 5, 6, 7, 8};
+const int digitPins[2] = {9, 10};
+const int digit[10][7] = {
+  {0, 0, 0, 0, 0, 0, 1}, // 0
+  {1, 0, 0, 1, 1, 1, 1}, // 1
+  {0, 0, 1, 0, 0, 1, 0}, // 2
+  {0, 0, 0, 0, 1, 1, 0}, // 3
+  {1, 0, 0, 1, 1, 0, 0}, // 4
+  {0, 1, 0, 0, 1, 0, 0}, // 5
+  {0, 1, 0, 0, 0, 0, 0}, // 6
+  {0, 0, 0, 1, 1, 1, 1}, // 7
+  {0, 0, 0, 0, 0, 0, 0}, // 8
+  {0, 0, 0, 0, 1, 0, 0}  // 9
+};
+
+void setup() {
+  for (int i = 0; i < 7; i++) {
+    pinMode(segmentPins[i], OUTPUT);
+  }
+  for (int i = 0; i < 2; i++) {
+    pinMode(digitPins[i], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int tens = 0; tens < 10; tens++) {
+    for (int ones = 0; ones < 10; ones++) {
+      for (int i = 0; i < 100; i++) { // Adjust this value to control the display speed
+        displayNumber(tens, ones);
+      }
+    }
+  }
+}
+
+void displayNumber(int tens, int ones) {
+  // Display tens digit
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentPins[i], digit[tens][i]);
+  }
+  digitalWrite(digitPins[0], HIGH); // Turn on tens digit
+  delay(5); // Small delay to prevent flickering
+  digitalWrite(digitPins[0], LOW); // Turn off tens digit
+
+  // Display ones digit
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentPins[i], digit[ones][i]);
+  }
+  digitalWrite(digitPins[1], HIGH); // Turn on ones digit
+  delay(5); // Small delay to prevent flickering
+  digitalWrite(digitPins[1], LOW); // Turn off ones digit
+}
+
+//////////////////////////////////////////////////////////////
+Single Digit Seven Segment:
+
+int pins[] = {2, 3, 4, 5, 6, 7, 8};
+int led_pin = 9;
+int de = 1000;
+int states[][7] = {
+  {0, 0, 0, 1, 1, 0, 0}, // 9
+  {0, 0, 0, 0, 0, 0, 0}, // 8
+  {0, 0, 0, 1, 1, 1, 1}, // 7
+  {0, 1, 0, 0, 0, 0, 0}, // 6
+  {0, 1, 0, 0, 1, 0, 0}, // 5
+  {1, 0, 0, 1, 1, 0, 0}, // 4
+  {0, 0, 0, 0, 1, 1, 0}, // 3
+  {0, 0, 1, 0, 0, 1, 0}, // 2
+  {1, 0, 0, 1, 1, 1, 1}, // 1
+  {0, 0, 0, 0, 0, 0, 1}  // 0
+};
+bool is_led_on = false;
+
+void setup() 
+{
+   for (int i = 0; i < 7; i++) {
+    pinMode(pins[i], OUTPUT);
+  }
+  pinMode(led_pin, OUTPUT);
+}
+void loop() {
+  SevenSegment();
+  LedLight();
+}
+
+void SevenSegment(){
+  for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 7; j++) {
+      digitalWrite(pins[j], states[i][j]);
+    }
+    delay(de);
+  }
+}
+void LedLight(){
+  if (is_led_on)
+  { 
+    digitalWrite(led_pin, LOW); 
+    is_led_on = false; 
+  }
+  else 
+  { 
+    digitalWrite(led_pin, HIGH); 
+    is_led_on = true; 
+  }
+}
+
+///////////////////////////////////////////////////////
+Blinking LED Light with seven segment
+
+int pins[] = {2, 3, 4, 5, 6, 7, 8};
+
+int de = 1500;
+int states[][7] = {
+  {0, 0, 0, 0, 1, 0, 0}, // 9
+  {0, 0, 0, 0, 0, 0, 0}, // 8
+  {0, 0, 0, 1, 1, 1, 1}, // 7
+  {0, 1, 0, 0, 0, 0, 0}, // 6
+  {0, 1, 0, 0, 1, 0, 0}, // 5
+  {1, 0, 0, 1, 1, 0, 0}, // 4
+  {0, 0, 0, 0, 1, 1, 0}, // 3
+  {0, 0, 1, 0, 0, 1, 0}, // 2
+  {1, 0, 0, 1, 1, 1, 1}, // 1
+  {0, 0, 0, 0, 0, 0, 1}  // 0
+};
+
+
+void setup() 
+{
+   for (int i = 0; i < 7; i++) {
+    pinMode(pins[i], OUTPUT);
+  }
+  
+}
+void loop() {
+  SevenSegment();
+  
+}
+
+void SevenSegment(){
+  for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 7; j++) {
+      digitalWrite(pins[j], states[i][j]);
+    }
+    delay(de);
+  }
+}
+
+///////////////////
+three blinking lights
+
+int ledPins[] = {2,3,4};
+
+void setup(){
+  for(int i = 0; i< 3; i++){
+    pinMode(ledPins[i], OUTPUT);
+  }
+}
+
+void loop(){
+  for (int i = 0; i < 3; i++){
+    digitalWrite(ledPins[i], HIGH);
+    delay(250);
+    digitalWrite(ledPins[i], LOW);
+    delay(250);
+  }
+}
