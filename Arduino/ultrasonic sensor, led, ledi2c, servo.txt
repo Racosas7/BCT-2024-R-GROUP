@@ -1,0 +1,79 @@
+#include <LiquidCrystal.h>
+#include "Wire.h" // Library for I2C communication
+#include "LiquidCrystal_I2C.h" // Library for LCD
+#include <Servo.h>
+
+#define trigPin 9
+#define echoPin 10
+#define ledPin 13
+Servo myServo1;
+Servo myServo2;
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2); // Change to (0x27,20,4) for 20x4 LCD.
+
+int position = 0;
+int delta = 15;
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  myServo1.attach(3);
+  myServo2.attach(4);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void led_display_with_servoMotor(bool isOpen = false){
+  lcd.setCursor(0,0);
+  
+  if(isOpen){
+    if(position >= 90){
+      lcd.print("Open   ");
+    }else{
+      lcd.print("Loading");
+      position += delta;
+    }
+    delay(15);
+  }else{/////////////////////////
+  if(position <= 0){
+    lcd.print("Close  ");
+  }else{
+    lcd.print("Loading");
+    position -= delta;
+  }
+    delay(15);
+  }
+  lcd.print(" ");
+}
+
+void loop() {
+  myServo1.write(position);
+  myServo2.write(180 - position);
+
+  long duration, distance;
+  
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration / 2) / 29.1;
+  
+  if (distance <= 100) { // Change this value to set the distance threshold
+    digitalWrite(ledPin, HIGH);
+    led_display_with_servoMotor(true);
+  } else {
+    digitalWrite(ledPin, LOW);
+    led_display_with_servoMotor(false);
+  }
+  
+  // Display distance
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  delay(500);
+}
